@@ -44,6 +44,7 @@ sock_server.listen(5) #max antrian klien di memori
 
 #buat dictionary ntuk menyimmpan informasi klein
 clients = {}
+friends = {}
 
 while True:
     #accept connection from clien
