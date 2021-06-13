@@ -13,7 +13,7 @@ def read_msg(clients, sock_cli, addr_cli, username_cli):
         msg = "<{}>:{}".format(username_cli,msg)
 
         #teruskan pesan ke semua clien
-        if dest=="bcast":
+        if dest == "bcast" :
             send_broadcast (clients, msg, addr_cli)
         else:
             dest_sock_cli = clients[dest][0]
