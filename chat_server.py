@@ -1,8 +1,6 @@
 import socket
 import threading #memungkinkan aplikasi menjalankan beberapa hal sekaligus secara bersamaan
 
-friends = {}
-
 def read_msg(clients, sock_cli, addr_cli, username_cli):
     while True:
         #terima pesan
@@ -16,11 +14,7 @@ def read_msg(clients, sock_cli, addr_cli, username_cli):
 
         #teruskan pesan ke semua clien
         if dest=="bcast":
-            send_broadcast (clients, data, addr_cli)
-        elif dest=="addFriend":
-            while True :
-                #simpan informasi ttg klien ke dictionary
-                friends[username_cli] = (sock_cli, addr_cli, thread_cli)
+            send_broadcast (clients, msg, addr_cli)
         else:
             dest_sock_cli = clients[dest][0]
             send_msg(dest_sock_cli, msg)
@@ -29,8 +23,6 @@ def read_msg(clients, sock_cli, addr_cli, username_cli):
 
     sock_cli.close()
     print("Connection Closed", addr_cli)
-
-def addfriend(clients, data, sender_addr_cli):
 
 #kirim ke semua klien
 def send_broadcast(clients, data, sender_addr_cli):
@@ -52,6 +44,7 @@ sock_server.listen(5) #max antrian klien di memori
 
 #buat dictionary ntuk menyimmpan informasi klein
 clients = {}
+friends = {}
 
 while True:
     #accept connection from clien

@@ -26,10 +26,7 @@ thread_cli.start()
 while True:
     #kirim / terima pesan
     dest = input("Masukkan username tujuan (ketikka bcast untuk broadcast atau addFriend untuk tambahkan teman): ")
-    if dest=="addFriend":
-        msg = input("Masukkan username yang ingin dijadikan teman: ")
-    else:
-        msg = input("Masukkan pesan anda: ")
+    msg = input("Masukkan pesan anda: ")
 
     if(msg=="exit"):
         sock_cli.close()
