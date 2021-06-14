@@ -1,6 +1,5 @@
 import socket
 import threading #memungkinkan aplikasi menjalankan beberapa hal sekaligus secara bersamaan
-from typing import Collection
 import time
 
 friends = {}
@@ -16,6 +15,7 @@ def read_msg(clients, sock_cli, addr_cli, username_cli):
 
         if len(decoded) > 2:
             dest, filename, filesize = decoded
+            # print(decoded)
             dest_sock_cli = clients[dest][0]
             fileinfo = "{}|{}|{}".format(username_cli, filename, filesize)
             send_file(sock_cli, dest_sock_cli, fileinfo)
@@ -55,7 +55,7 @@ def send_friends (friends, data, sender_addr_cli):
 def send_broadcast(clients, data, sender_addr_cli):
     for sock_cli, addr_cli, _ in clients.values():
         if not (sender_addr_cli[0] == addr_cli[0] and sender_addr_cli[1] == addr_cli[1]):
-            print(sender_addr_cli[0], sender_addr_cli[1])
+            # print(sender_addr_cli[0], sender_addr_cli[1])
             send_msg (sock_cli, data)
 
 def send_msg (sock_cli, data):
