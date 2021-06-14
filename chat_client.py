@@ -29,6 +29,7 @@ while True:
     print ("Untuk mengirim pesan ke semua, ketik \"bcast\"")
     print ("Untuk menambahkan teman, ketik \"addFriend\"")
     print ("Untuk mengirim pesan ke teman, ketik \"sendFriend\"")
+    print ("Ketikkan exit untuk keluar")
     dest = input()
 
     if dest == "addFriend" :
