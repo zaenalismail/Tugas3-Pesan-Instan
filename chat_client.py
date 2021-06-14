@@ -29,16 +29,15 @@ while True:
     print ("Untuk mengirim pesan ke semua, ketik \"bcast\"")
     print ("Untuk menambahkan teman, ketik \"addFriend\"")
     print ("Untuk mengirim pesan ke teman, ketik \"sendFriend\"")
-    print ("Untuk keluar dari aplikasi, ketik \"exit\"")
     dest = input()
 
     if dest == "addFriend" :
         msg = input("Masukkan username yang ingin anda jadikan teman: ")
-
-    elif dest == "bcast" :
+    else:
         msg = input("Masukkan pesan anda: ")
-        sock_cli.send(bytes("{}|{}".format(dest,msg), "utf-8"))
 
-    elif dest == "exit":
+    if(msg=="exit"):
         sock_cli.close()
         break
+    
+    sock_cli.send(bytes("{}|{}".format(dest,msg), "utf-8"))
