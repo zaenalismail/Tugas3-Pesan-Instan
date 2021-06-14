@@ -1,5 +1,7 @@
 import socket
 import threading #memungkinkan aplikasi menjalankan beberapa hal sekaligus secara bersamaan
+from typing import Collection
+import time
 
 friends = {}
 
@@ -10,30 +12,40 @@ def read_msg(clients, sock_cli, addr_cli, username_cli):
         if len(data)==0:
             break
 
-        #parsing pesan
-        dest,msg = data.decode("utf-8").split("|")
-        unamefriend = msg
-        msg = "<{}>:{}".format(username_cli,msg)
+        decoded = data.decode("utf-8").split("|")
 
-        #teruskan pesan ke semua clien
-        if dest == "bcast" :
-            send_broadcast (clients, msg, addr_cli)
-        elif dest == "addFriend" :
-            for x in clients.keys():
-                if x == unamefriend :
-                    friends[unamefriend] = clients[unamefriend]
-                    print(msg, " Added as a friend")
-        elif dest == "sendFriend" :
-            send_friends (friends, msg, addr_cli)
-        else:
+        if len(decoded) > 2:
+            dest, filename, filesize = decoded
             dest_sock_cli = clients[dest][0]
-            send_msg(dest_sock_cli, msg)
+            fileinfo = "{}|{}|{}".format(username_cli, filename, filesize)
+            send_file(sock_cli, dest_sock_cli, fileinfo)
 
-        print(data)
+        else:
+            #parsing pesan
+            dest,msg = data.decode("utf-8").split("|")
+            unamefriend = msg
+            msg = "<{}>:{}".format(username_cli,msg)
+
+            #teruskan pesan ke semua clien
+            if dest == "bcast" :
+                send_broadcast (clients, msg, addr_cli)
+            elif dest == "addFriend" :
+                for x in clients.keys():
+                    if x == unamefriend :
+                        friends[unamefriend] = clients[unamefriend]
+                        print(msg, " Added as a friend")
+            elif dest == "sendFriend" :
+                send_friends (friends, msg, addr_cli)
+            else:
+                dest_sock_cli = clients[dest][0]
+                send_msg(dest_sock_cli, msg)
+
+            print(data)
 
     sock_cli.close()
     print("Connection Closed", addr_cli)
 
+#kirim ke teman
 def send_friends (friends, data, sender_addr_cli):
     for sock_cli, addr_cli, _ in friends.values():
         if not (sender_addr_cli[0] == addr_cli[0] and sender_addr_cli[1] == addr_cli[1]):
@@ -49,6 +61,26 @@ def send_broadcast(clients, data, sender_addr_cli):
 def send_msg (sock_cli, data):
     sock_cli.send(bytes(data,"utf-8"))
 
+#kirim file
+def send_file(sender_addr_cli, sock_cli, fileinfo):
+    sock_cli.send(bytes(fileinfo, "utf-8"))
+    time.sleep(0.1)
+
+    total = 0
+    sender, filename, filesize = fileinfo.split("|")
+    print(filename, filesize)
+    while True:
+        if total >= int(filesize):
+            break
+        data = sender_addr_cli.recv(65535)
+
+        try:
+            sock_cli.sendall(data)
+        
+        except:
+            sock_cli.close()
+
+        total = total + len(data)
 #buat object socket server
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
