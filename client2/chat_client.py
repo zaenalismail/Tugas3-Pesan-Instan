@@ -54,10 +54,10 @@ while True:
         msg = input("Masukkan username yang ingin anda jadikan teman: ")
     
     elif dest == "file" :
-        msg = input("Masukkan username tujuan pengiriman file: ")
-        filename = input("Masukkan file yang akan dikirim: ")
+        msg = input("Masukkan username tujuan : ")
+        filename = input("Masukkan file yang dikirim: ")
         filesize = os.path.getsize(filename)
-        sock_cli.send(bytes("{}|{}|{}".format(dest, filename, filesize), "utf-8"))
+        sock_cli.send(bytes("{}|{}|{}".format(msg, filename, filesize), "utf-8"))
         time.sleep(0.5)
 
         with open(filename, "rb") as file:
@@ -66,10 +66,10 @@ while True:
 
                 if not data:
                     break
-                    file.close()
 
                 print("Sending")
                 sock_cli.sendall(data)
+                print(data)
             print("File telah terkirim\n")
 
     elif dest == "exit":
